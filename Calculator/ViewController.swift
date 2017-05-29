@@ -69,7 +69,9 @@ class ViewController: UIViewController {
     
     func updateDisplay() {
         if let result = brain.result {
-            displayValue = result
+            let formatter = NumberFormatter()
+            formatter.maximumFractionDigits = 6
+            display.text = formatter.string(from: result as NSNumber)
         } 
         if let sequence = brain.currentDescription {
             currentSequence.text = sequence
