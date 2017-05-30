@@ -14,24 +14,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
     
     var userIsInTheMiddleOfTyping = false
-    var userIsTypingFloat = false
     
     @IBAction func touchDigit(_ sender: UIButton) {
         if let digit = sender.currentTitle {
             if userIsInTheMiddleOfTyping {
-                if userIsTypingFloat == false || (userIsTypingFloat == true && digit != ".") {
-                    let textCurrectlyInDisplay = display.text!
-                    display.text = textCurrectlyInDisplay + digit
-                    if digit == "." {
-                        userIsTypingFloat = true
-                    }
+                let textCurrectlyInDisplay = display.text!
+                if digit == "." && textCurrectlyInDisplay.characters.index(of: ".") != nil {
+                    return
                 }
+                display.text = textCurrectlyInDisplay + digit
+                
             } else {
                 display.text = digit
                 userIsInTheMiddleOfTyping = true
-                if digit == "." {
-                    userIsTypingFloat = true
-                }
             }
         }
     }
@@ -50,7 +45,6 @@ class ViewController: UIViewController {
     @IBAction func performOperation(_ sender: UIButton) {
         if let mathematicalSymbol = sender.currentTitle, mathematicalSymbol == "C" {
             userIsInTheMiddleOfTyping = false
-            userIsTypingFloat = false
             brain.result = nil
             brain.currentDescription = nil
             updateDisplay()
@@ -59,7 +53,6 @@ class ViewController: UIViewController {
         if userIsInTheMiddleOfTyping {
             brain.setOperand(displayValue)
             userIsInTheMiddleOfTyping = false
-            userIsTypingFloat = false
         }
         if let mathematicalSymbol = sender.currentTitle {
             brain.performOperation(mathematicalSymbol) // to do calculation is not my job as a controller
@@ -72,7 +65,7 @@ class ViewController: UIViewController {
             let formatter = NumberFormatter()
             formatter.maximumFractionDigits = 6
             display.text = formatter.string(from: result as NSNumber)
-        } 
+        }
         if let sequence = brain.currentDescription {
             currentSequence.text = sequence
         } else {
